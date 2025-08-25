@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+</style>
+</head>
+
+<body>
+<p>egg</p>
+
+<canvas id="myCanvas" width="500px" height="400px" style="border:4px solid #000000;"></canvas>
+
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var x = canvas.width/2;
+var y = canvas.height-30;
+var dx = 2;
+var dy = -2;
+var paddleHeight = 50;
+var paddleWidth = 50;
+var paddleX = (canvas.width-paddleWidth)/2;
+var paddleY = 300
+
+var rightPressed = false;
+var leftPressed = false;
+var upPressed = false;
+
+var yFall = .1;
+
+
+var boxX = 200;
+var boxY = 200;
+
+
+
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+
+//document.isColliding?'blue':'green';
+
+
+function collisionTest(){
+    paddleXCenter = paddleX + 25;
+    boxXCenter = boxX + 25;
+    
+    paddleYCenter = paddleY + 25;
+    boxYCenter = boxY + 25;
+	
+	if (boxXCenter < paddleXCenter+50 && boxXCenter > paddleXCenter-50){
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, 50, 50);
+        if (boxYCenter < paddleYCenter+50 && boxYCenter > paddleYCenter-50){
+            ctx.fillStyle = "blue";
+            ctx.fillRect(50, 0, 50, 50);
+            
+        }
+    }
+    
+ 
+}
+
+
+function drawPlatform(platType, platX, platY){
+	if(platType == "ground"){
+	ctx.fillStyle = "green";
+    ctx.fillRect(platX, platY, 50, 50);
+	
+	
+	
+	}
+	else if(platType == "lava"){
+	ctx.fillStyle = "red";
+    ctx.fillRect(platX, platY, 50, 50);
+	}
+	else if(platType == "winCond"){
+	ctx.fillStyle = "yellow";
+    ctx.fillRect(platX, platY, 50, 50);
+	}
+}
+
+function keyDownHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = true;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = true;
+    }
+	else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = true;
+    }
+}
+
+function keyUpHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = false;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = false;
+    }
+
+    else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = false;
+    }
+}
+
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	//background grass
+    ctx.fillStyle = "lightgreen";
+    ctx.fillRect(0, 0, 500, 400);
+    //background sky
+    ctx.fillStyle = "lightblue";
+    ctx.fillRect(0, 0, 500, 285);
+    //background clouds
+    ctx.fillStyle = "lightgrey";
+    ctx.fillRect(25, 25, 150, 75);
+    ctx.fillRect(275, 125, 150, 75);
+
+    //ground
+	drawPlatform("ground", 0, 350);
+	drawPlatform("ground", 50, 350);
+	drawPlatform("ground", 100, 350);
+	drawPlatform("ground", 150, 350);
+	drawPlatform("ground", 200, 350);
+	drawPlatform("ground", 250, 350);
+	drawPlatform("ground", 300, 350);
+	drawPlatform("ground", 350, 350);
+	drawPlatform("ground", 400, 350);
+	drawPlatform("ground", 450, 350);
+	drawPlatform("ground", 500, 350);
+	
+	drawPlatform("ground", 200, 200);
+	
+    
+    //lava
+    drawPlatform("lava", 350, 350);
+    
+
+    //win condition
+	drawPlatform("winCond", 425, 275);
+
+
+	//mover
+    drawPaddle();
+	
+	
+	collisionTest();
+	
+	
+	//gravity
+	if(paddleY < 300){
+		yFall = yFall * 1.1;
+		paddleY = paddleY + (yFall);
+		
+		if (paddleY >= 300){
+		yFall = .1;
+		paddleY = 300;
+		
+		}
+	}
+	
+    //movement
+    if(rightPressed) {
+        paddleX += 7;
+        if (paddleX + paddleWidth > canvas.width){
+            paddleX = canvas.width - paddleWidth;
+        }
+    }
+    else if(leftPressed) {
+        paddleX -= 7;
+        if (paddleX < 0){
+            paddleX = 0;
+        }
+    }
+	else if(upPressed) {
+        paddleY -= 7;
+        if (paddleY < 0){
+            paddleY = 0;
+        }
+
+	}
+
+    
+    //x += dx;
+    //y += dy;
+}
+
+const interval = setInterval(draw, 10);
+</script>
+
+
+</body>
+</html>
